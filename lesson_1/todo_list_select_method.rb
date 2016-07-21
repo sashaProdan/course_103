@@ -136,21 +136,3 @@ class TodoList
     each { |todo| todo.undone! }
   end
 end
-
-todo1 = Todo.new('Buy milk')
-todo2 = Todo.new('Drink beer')
-todo3 = Todo.new('Play tennis')
-todo4 = Todo.new('Buy some presents')
-todo5 = Todo.new('Go see grandma')
-
-list = TodoList.new('Tasks for today')
-
-list.add(todo1)
-list.add(todo2)
-list.add(todo3)
-list.mark_done_at(1)
-
-puts list.to_s
-
-puts list.mark_all_done
-puts list.mark_all_undone
