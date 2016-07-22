@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'minitest/autorun'
 
 require_relative 'todo_list'
@@ -23,6 +26,9 @@ class TodoListTest < MiniTest::Test
 
   def test_size
     assert_equal(3, @list.size)
+
+    @list.remove_at(1)
+    assert_equal(2, @list.size)
   end
 
   def test_first_todo
@@ -54,10 +60,21 @@ class TodoListTest < MiniTest::Test
   def test_all_todos_done
     @list.done!
     assert_equal(true, @list.done?)
+
+    @list.each { |t| t.undone!}
+    assert_equal(false, @list.done?)
   end
   
   def test_not_todo_object
     assert_raises(TypeError) { @list << 6 }
+    assert_raises(TypeError) { @list << [1, 2, 3] }
+    assert_raises(TypeError) {@list << "hello" }
+  end
+
+  def test_add_showel
+    todo4 = Todo.new("Greet the parents")
+    todos = @todos << todo4
+    assert_equal([@todo1, @todo2, @todo3, todo4], todos)
   end
 
   def test_alias_method_add
@@ -68,14 +85,13 @@ class TodoListTest < MiniTest::Test
 
   def test_item_at
     assert_equal(@todo3, @list.item_at(2))
-  end
-
-  def test_raise_index_error_if_no_todo
     assert_raises(IndexError) { @list.item_at(30) }
   end
 
   def test_mark_done_at_index_error
     assert_raises(IndexError) { @list.mark_done_at(30) }
+    @list.mark_done_at(2)
+    assert_equal(true, @todo3.done?)
   end
 
   def test_mark_undone_at
@@ -97,7 +113,13 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_remove_at
-    assert_equal(@todo3, @list.remove_at(2))
+    todo = @list.remove_at(2)
+    assert_equal(@todo3, todo)
+  end
+
+  def test_remove_at_final_list
+    @list.remove_at(0)
+    assert_equal(2, @list.size)
   end
 
   def test_index_error_remove_at
